@@ -8,34 +8,15 @@
     android:background="#0D0D1A">
 
     <TextView
-        android:text="⚔️ TSB Macro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TSB Macro"
         android:textSize="28sp"
         android:textColor="#0A84FF"
         android:textStyle="bold"
         android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:paddingBottom="8dp"/>
 
     <TextView
-        android:text="The Strongest Battleground"
-        android:textSize="14sp"
-        android:textColor="#AAAACC"
-        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="32dp"/>
-
-    <TextView
-        android:id="@+id/statusText"
-        android:textSize="14sp"
-        android:textColor="#FFFFFF"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="24dp"
-        android:lineSpacingExtra="6dp"/>
-
-    <Button
-        android:id="@+id/btnPermission"
-        android:te
