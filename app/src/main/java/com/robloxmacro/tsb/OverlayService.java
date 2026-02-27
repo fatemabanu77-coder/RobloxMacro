@@ -1,0 +1,37 @@
+package com.robloxmacro.tsb;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PixelFormat;
+import android.os.Build;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Looper;
+import android.os.Vibrator;
+import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.SeekBar;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
+public class OverlayService extends Service {
+private WindowManager wm;
+private View btn,menu;
+private WindowManager.LayoutParams bp,mp;
+private MacroConfig cfg=new MacroConfig();
+private Handler mh=new Handler(Looper.getMainLooper());
+private Runnable mr;
+private Handler lph=new Handler(Looper.getMainLooper());
+private boolean lp=false,drag=false,locked=false;
+private int ix,iy;
+private float itx,ity;
+private static final String CH="TSBMacro";
+public IBinder onBind(Intent i){return null;}
