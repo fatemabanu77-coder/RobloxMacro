@@ -100,3 +100,60 @@ wm.addView(menu,mp);
 private void dismissMenu(){if(menu!=null){wm.removeView(menu);menu=null;}}
 private void vib(){Vibrator v=(Vibrator)getSystemService(Context.VIBRATOR_SERVICE);if(v!=null)v.vibrate(80);}
 private int dpToPx(int dp){return(int)(dp*getResources().getDisplayMetrics().density);}
+private View buildMenu(){
+LinearLayout r=new LinearLayout(this);
+r.setOrientation(LinearLayout.VERTICAL);
+r.setPadding(dpToPx(16),dpToPx(16),dpToPx(16),dpToPx(16));
+android.graphics.drawable.GradientDrawable bg=new android.graphics.drawable.GradientDrawable();
+bg.setCornerRadius(dpToPx(16));
+bg.setColor(Color.parseColor("#F0141432"));
+bg.setStroke(2,Color.parseColor("#FF0A84FF"));
+r.setBackground(bg);
+TextView t=new TextView(this);
+t.setText("TSB Macro Settings");
+t.setTextColor(Color.parseColor("#FF0A84FF"));
+t.setTextSize(16);t.setGravity(Gravity.CENTER);
+r.addView(t);
+r.addView(mkSw("M1 Spam",cfg.m1Spam,c->cfg.m1Spam=c));
+r.addView(mkSk("M1 Speed",50,500,cfg.m1SpeedMs,v->cfg.m1SpeedMs=v));
+r.addView(mkSw("Auto Combo",cfg.autoCombo,c->cfg.autoCombo=c));
+r.addView(mkSk("Combo Pause",40,300,cfg.comboPauseMs,v->cfg.comboPauseMs=v));
+r.addView(mkSw("Auto Ultimate",cfg.autoUlt,c->cfg.autoUlt=c));
+r.addView(mkSw("Auto Dodge",cfg.autoDodge,c->cfg.autoDodge=c));
+r.addView(mkSw("Lock Target",cfg.lockTarget,c->cfg.lockTarget=c));
+r.addView(mkSw("Lock Button Position",locked,c->{locked=c;Toast.makeText(this,locked?"Locked!":"Unlocked!",Toast.LENGTH_SHORT).show();}));
+android.widget.Button cb=new android.widget.Button(this);
+cb.setText("Close");cb.setBackgroundColor(Color.parseColor("#FF0A84FF"));cb.setTextColor(Color.WHITE);
+cb.setOnClickListener(v->dismissMenu());
+r.addView(cb);
+ScrollView sv=new ScrollView(this);sv.addView(r);return sv;
+}
+interface BC{void c(boolean v);}
+interface IC{void c(int v);}
+private View mkSw(String l,boolean i,BC cb){
+LinearLayout r=new LinearLayout(this);r.setOrientation(LinearLayout.HORIZONTAL);r.setPadding(0,dpToPx(6),0,dpToPx(6));
+TextView t=new TextView(this);t.setText(l);t.setTextColor(Color.WHITE);t.setTextSize(13);
+LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(0,LinearLayout.LayoutParams.WRAP_CONTENT,1);t.setLayoutParams(lp);
+r.addView(t);Switch sw=new Switch(this);sw.setChecked(i);sw.setOnCheckedChangeListener((b,c)->cb.c(c));r.addView(sw);return r;
+}
+private View mkSk(String l,int mn,int mx,int cur,IC cb){
+LinearLayout c=new LinearLayout(this);c.setOrientation(LinearLayout.VERTICAL);
+TextView t=new TextView(this);t.setText(l+": "+cur);t.setTextColor(Color.WHITE);t.setTextSize(12);c.addView(t);
+SeekBar s=new SeekBar(this);s.setMax(mx-mn);s.setProgress(cur-mn);
+s.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
+public void onProgressChanged(SeekBar sb,int p,boolean f){int v=p+mn;t.setText(l+": "+v);cb.c(v);}
+public void onStartTrackingTouch(SeekBar sb){}
+public void onStopTrackingTouch(SeekBar sb){}});
+c.addView(s);return c;
+}
+private void createChannel(){
+if(Build.VERSION.SDK_INT>=26){
+NotificationChannel ch=new NotificationChannel(CH,"TSB Macro",NotificationManager.IMPORTANCE_LOW);
+NotificationManager nm=getSystemService(NotificationManager.class);if(nm!=null)nm.createNotificationChannel(ch);}
+}
+private Notification buildNote(){
+Notification.Builder b=Build.VERSION.SDK_INT>=26?new Notification.Builder(this,CH):new Notification.Builder(this);
+return b.setContentTitle("TSB Macro").setContentText("Running").setSmallIcon(android.R.drawable.ic_menu_manage).build();
+}
+public void onDestroy(){super.onDestroy();stopLoop();if(btn!=null)wm.removeView(btn);dismissMenu();}
+  }
