@@ -73,3 +73,30 @@ return true;
 case MotionEvent.ACTION_UP:
 lph.removeCallbacksAndMessages(null);
 if(!drag&&!lp){toggle();upda
+private void updateColor(){
+android.graphics.drawable.GradientDrawable s=new android.graphics.drawable.GradientDrawable();
+s.setShape(android.graphics.drawable.GradientDrawable.OVAL);
+s.setColor(cfg.macroRunning?Color.parseColor("#FF30D158"):Color.parseColor("#FF0A84FF"));
+s.setStroke(4,cfg.macroRunning?Color.parseColor("#FFFFD60A"):Color.WHITE);
+btn.setBackground(s);
+}
+private void toggle(){
+cfg.macroRunning=!cfg.macroRunning;
+if(cfg.macroRunning){startLoop();Toast.makeText(this,"Macro ON",Toast.LENGTH_SHORT).show();}
+else{stopLoop();Toast.makeText(this,"Macro OFF",Toast.LENGTH_SHORT).show();}
+}
+private void startLoop(){
+mr=new Runnable(){public void run(){if(!cfg.macroRunning)return;mh.postDelayed(this,cfg.m1SpeedMs);}};
+mh.post(mr);
+}
+private void stopLoop(){if(mr!=null)mh.removeCallbacks(mr);}
+private void showMenu(){
+if(menu!=null){dismissMenu();return;}
+menu=buildMenu();
+mp=new WindowManager.LayoutParams(dpToPx(300),WindowManager.LayoutParams.WRAP_CONTENT,Build.VERSION.SDK_INT>=26?WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY:WindowManager.LayoutParams.TYPE_PHONE,WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,PixelFormat.TRANSLUCENT);
+mp.gravity=Gravity.CENTER;
+wm.addView(menu,mp);
+}
+private void dismissMenu(){if(menu!=null){wm.removeView(menu);menu=null;}}
+private void vib(){Vibrator v=(Vibrator)getSystemService(Context.VIBRATOR_SERVICE);if(v!=null)v.vibrate(80);}
+private int dpToPx(int dp){return(int)(dp*getResources().getDisplayMetrics().density);}
